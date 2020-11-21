@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "LinkedList.h"
+#include "clientes.h"
+#include "controller.h"
 #include "utn.h"
 
 int main(void)
@@ -18,11 +20,13 @@ int main(void)
 	setbuf(stdout, NULL);
 	int opcion;
 
-	LinkedList* listaEmpleados = ll_newLinkedList();
+	LinkedList* listaClientes = ll_newLinkedList();
+	LinkedList* listaVentas = ll_newLinkedList();
 
 	do
 	{
-		if(utn_getNumero("\n\nMenu de opciones"
+		if(controller_clienteLoadFromText("clientes.txt", listaClientes) ==  0 &&
+			utn_getNumero("\n\nMenu de opciones"
     					 "\n1. Agregar cliente"
     					 "\n2. Vender afiches."
     					 "\n3. Modificar venta."
@@ -34,7 +38,27 @@ int main(void)
 		{
 			switch(opcion)
 			{
-			case 1:
+			case 1: // NECESITO VERIFICAR MEJOR EL CUIT, EVITAR QUE SE GUARDE 2 VECES LA LISTA
+					if(controller_addCliente(listaClientes) == 0 &&
+					   controller_clienteSaveAsText("clientes.txt",listaClientes) == 0)
+					{
+						printf("\nCliente agregado con exito\n");
+					}
+					else
+					{
+						printf("\nSurgio un error");
+					}
+					break;
+			case 2:
+					if( controller_venderAfiches(listaClientes,listaVentas) == 0 &&
+						controller_ventaSaveAsText("ventas.txt",listaVentas) == 0)
+					{
+						printf("\nVenta agregada con exito\n");
+					}
+					else
+					{
+						printf("\nSurgio un error");
+					}
 					break;
 			}
 		}

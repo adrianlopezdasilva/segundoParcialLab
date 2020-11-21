@@ -15,5 +15,6 @@ int utn_getString(char* mensaje, char* mensajeError, char* pResultado,int reinte
 int esUnNombreValido(char* cadena,int limite);
 int ordenar(int array[], int len);
 int esNumerica(char* cadena, int limite);
+//int isValidCuit(char* cuit);
 
 #endif /* UTN_H_ */

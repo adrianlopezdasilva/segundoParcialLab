@@ -1,0 +1,6 @@
+1, Mariano, Rojas, 35000
+2, Joana, Gutierrez, 350350
+3, carlos, gonzalez, 350350
+4, juan, escarlata, 350305
+5, mariano, moreno, 340340
+6, natalia, perez, 353050

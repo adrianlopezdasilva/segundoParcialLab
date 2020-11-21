@@ -152,7 +152,7 @@ static int getInt(int *pResultado)
  */
 int esUnNombreValido(char* cadena,int limite)
 {
-	int respuesta = 1; // TODO OK
+	int respuesta = 1; //  OK
 
 	for(int i=0; i<=limite && cadena[i] != '\0';i++)
 	{
@@ -357,4 +357,18 @@ static int isFloat(char *cadena)
 		  }
 	}
   return retorno;
+}
+
+int isValidCuit(char* cuit)
+{
+    int retorno= 1;
+   /* int i;
+    for(i=0;  cuit[i]!='\0';i++)
+    {
+        if((cuit[i]<'0' || cuit[i]>'9') && (cuit[i]!= '-' ))
+        {
+            retorno = -1;
+        }
+    }*/
+    return retorno;
 }

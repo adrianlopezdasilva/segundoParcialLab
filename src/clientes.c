@@ -12,8 +12,7 @@
 #include "utn.h"
 
 
-static int isValidCuit (int cuit);
-
+static int isValidCuit();
 /** \brief Crea un nuevo Cliente
  *
  * \param void LinkedList* es donde esta contenida la direccion de memoria de la lista
@@ -100,7 +99,7 @@ int cliente_setId(Cliente* this,int id)
  *
  * \return -1 si hay error, 0 si funciona bien
  */
-int Cliente_getId(Cliente* this,int* id)
+int cliente_getId(Cliente* this,int* id)
 {
 	int retorno = -1;
 	if(this != NULL)
@@ -184,7 +183,7 @@ int cliente_getApellido(Cliente* this,char* apellido)
 	int retorno = -1;
 	if(this != NULL && apellido != NULL)
 	{
-		strncpy(apellido,this->nombre, SIZECLIENTE);
+		strncpy(apellido,this->apellido, SIZECLIENTE);
 		retorno = 0;
 	}
 	return retorno;
@@ -337,22 +336,9 @@ int Cliente_compareByCuit(void* thisOne , void* thisTwo)
 	return retorno;
 }
 
-/** \brief Valida que el cuit este dentro de los rangos aceptables
- *
- * \param cuit int El cuit a validad
- * \return -1 si hay error, 1 si funciona bien
- */
-static int isValidCuit (int cuit)
+
+int isValidCuit()
 {
-	int retorno = 1;
-
-	if(cuit < 0 || cuit > 1000000000)
-	{
-		retorno = -1;
-	}
-
-	return retorno;
+	return 1;
 }
-
-
 
