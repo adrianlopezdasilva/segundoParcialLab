@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "LinkedList.h"
 #include "clientes.h"
+#include "ventas.h"
 
 /** \brief Parsea los datos los datos de los clientes desde el archivo data.csv (modo texto).
  *
@@ -84,3 +85,41 @@ int parser_ClienteFromBinary(FILE* pFile , LinkedList* this)
 	return retorno;
 }
 
+/** \brief Parsea los datos los datos de los clientes desde el archivo data.csv (modo texto).
+ *
+ * \param path char* direccion donde se encuentra el archivo
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
+int parser_ventaFromText(FILE* pFile , LinkedList* this)
+{
+	Venta* bufferVenta;
+	int retorno = -1;
+	char auxIdVenta[4096];
+	char auxIdCliente[4096];
+	char auxNombreArchivo[4096];
+	char auxCantidad[4096];
+	char auxZona[4096];
+	char auxEstado[4096];
+
+	if(pFile != NULL)
+	{
+		do
+		{
+			if (fscanf(pFile,"%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]\n",
+					auxIdVenta,auxIdCliente ,auxNombreArchivo ,auxCantidad ,auxZona , auxEstado)== 6)
+			{
+				//printf("%s, %s, %s, %s\n", auxId, auxNombre, auxApellido, auxCuit);
+				bufferVenta = venta_newParametros(auxIdVenta,auxIdCliente,auxNombreArchivo, auxCantidad, auxZona, auxEstado );
+				if(bufferVenta != NULL)
+				{
+					ll_add(this, bufferVenta);
+				}
+			}
+
+		}while(feof(pFile) == 0);
+		retorno = 0;
+	}
+    return retorno;
+}

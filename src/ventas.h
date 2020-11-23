@@ -7,6 +7,7 @@
 
 #ifndef VENTAS_H_
 #define VENTAS_H_
+#include "LinkedList.h"
 #define SIZEVENTAS 30
 #define SINCOBRAR 0
 #define COBRADA 1
@@ -36,4 +37,6 @@ int venta_setZona(Venta* this,int zona);
 int venta_getZona(Venta* this,int* zona);
 int venta_setEstadoCobranza(Venta* this,int estadoCobranza);
 int venta_getEstadoCobranza(Venta* this,int* estadoCobranza);
+int venta_listarVentasSinCobrar(void* this);
+void* controller_buscarVentaPorId(LinkedList* this, int id);
 #endif /* VENTAS_H_ */

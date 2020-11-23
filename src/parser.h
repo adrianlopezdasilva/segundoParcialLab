@@ -10,5 +10,6 @@
 
 int parser_clienteFromText(FILE* pFile , LinkedList* this);
 int parser_clienteFromBinary(FILE* pFile , LinkedList* this);
+int parser_ventaFromText(FILE* pFile , LinkedList* this);
 
 #endif /* PARSER_H_ */

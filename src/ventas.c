@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ventas.h"
+#include "LinkedList.h"
 #include "utn.h"
 
 
@@ -290,7 +291,7 @@ static int isValidZona (int zona)
 	return retorno;
 }
 
-/** \brief Obtiene el estao de la cobrazna de los afiches
+/** \brief Obtiene el estado de la cobrazna de los afiches
  *
  * \param this Venta* la lista a utilizar
  * \param estadoCobranza int* el estadoCobranza obtenido
@@ -327,7 +328,7 @@ int venta_setEstadoCobranza(Venta* this,int estadoCobranza)
 	return retorno;
 }
 
-/** \brief Valida que las horas trabajadas este dentro de los rangos aceptables
+/** \brief Valida que la cantidad de afiches este dentro de los rangos aceptables
  *
  * \param zona int El zona a validad
  * \return -1 si hay error, 1 si funciona bien
@@ -344,4 +345,54 @@ static int isValidCantidadAfiches(int horas)
 	return retorno;
 }
 
+int venta_listarVentasSinCobrar(void* this)
+{
+	int retorno = -1;
+	Venta* bufferVenta = (Venta*) this;
+	int auxEstado;
+	int auxIdVenta;
+	int auxIdCliente;
+	int auxCantidad;
+	char auxNombreArchivo[SIZEVENTAS];
+	int auxZona;
 
+	if(this != NULL)
+	{
+		if(venta_getEstadoCobranza(this, &auxEstado)== 0 &&
+		   auxEstado == SINCOBRAR &&
+		   venta_getIdCliente(bufferVenta, &auxIdCliente)==0 &&
+		   venta_getIdVenta(bufferVenta, &auxIdVenta) == 0 &&
+		   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0 &&
+		   venta_getNombreArchivo(bufferVenta, auxNombreArchivo)==0 &&
+		   venta_getZona(bufferVenta, &auxZona)==0 )
+		{
+			retorno = 0;
+			printf("\n%d   \t-  %d\t - %s\t  - %d\t - %d\t - %d",
+					auxIdVenta,auxIdCliente,auxNombreArchivo, auxCantidad, auxZona, auxEstado);
+		}
+	}
+	return retorno;
+
+}
+
+void* controller_buscarVentaPorId(LinkedList* this, int id)
+{
+	int len;
+	Venta* bufferVenta = NULL;
+	int auxId;
+
+	if(this != NULL)
+	{
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferVenta = (Venta*) ll_get (this, i);
+			if(venta_getIdVenta(bufferVenta, &auxId) == 0 &&
+			   id == auxId)
+			{
+				break;
+			}
+		}
+	}
+	return bufferVenta;
+}

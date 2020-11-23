@@ -12,20 +12,27 @@
 #include <stdlib.h>
 #include "LinkedList.h"
 #include "clientes.h"
+#include "ventas.h"
 #include "controller.h"
 #include "utn.h"
+#include "informes.h"
 
 int main(void)
 {
 	setbuf(stdout, NULL);
 	int opcion;
+	int flagCargado = 0;
 
 	LinkedList* listaClientes = ll_newLinkedList();
 	LinkedList* listaVentas = ll_newLinkedList();
 
 	do
 	{
-		if(controller_clienteLoadFromText("clientes.txt", listaClientes) ==  0 &&
+
+		if((flagCargado == 0  &&
+			controller_clienteLoadFromText("clientes.txt", listaClientes) == 0 &&
+			controller_ventaLoadFromText("ventas.txt", listaVentas) == 0 )
+			 ||
 			utn_getNumero("\n\nMenu de opciones"
     					 "\n1. Agregar cliente"
     					 "\n2. Vender afiches."
@@ -60,7 +67,27 @@ int main(void)
 						printf("\nSurgio un error");
 					}
 					break;
+			case 3:
+					if(controller_modificarVenta(listaClientes,listaVentas) == 0)
+					{
+						printf("\nTodo bien \n");
+					}
+					break;
+
+			case 5:
+					if(informe_informeCobros("cobrados.txt",listaClientes,listaVentas) == 0)
+					{
+						printf("\nTodo bien \n");
+					}
+					break;
+			case 6:
+					if(informe_informeDeudas("a_cobrar.txt",listaClientes,listaVentas) == 0)
+					{
+						printf("\nTodo bien \n");
+					}
+					break;
 			}
+			flagCargado = 1;
 		}
 
 	}while(opcion != 8);

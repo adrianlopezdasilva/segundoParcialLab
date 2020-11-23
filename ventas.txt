@@ -1,0 +1,9 @@
+1, 2, Se busca urgente, 50, 1, 1
+2, 5, Se necesita empleado, 7, 1, 0
+3, 1, Se busca cajero, 7, 1, 1
+4, 6, Perro perdido, 7, 1, 0
+5, 5, Necesitamos, 9, 3, 1
+6, 5, En busqueda, 1, 2, 1
+7, 7, En camino, 1, 2, 0
+8, 1, Buscamos!!, 1, 2, 0
+9, 15, Necesitamos!!, 5, 2, 1

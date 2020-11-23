@@ -79,6 +79,27 @@ int controller_clienteSaveAsText(char* path , LinkedList* this)
 	 return retorno;
 }
 
+/** \brief Carga los datos de las ventas desde el archivo ventas.txt (modo texto).
+ *
+ * \param path char* direccion donde se encuentra el archivo
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
+int controller_ventaLoadFromText(char* path , LinkedList* this)
+{
+    int retorno = -1;
+
+    FILE* pFile = fopen(path,"r");
+    if(pFile !=NULL)
+    {
+    	parser_ventaFromText(pFile,this);
+    	retorno = 0;
+    }
+    fclose(pFile);
+
+    return retorno;
+}
 /** \brief Guarda los datos de las ventas en el archivo ventas.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
@@ -116,7 +137,7 @@ int controller_ventaSaveAsText(char* path , LinkedList* this)
 					   venta_getEstadoCobranza(bufferVenta,&auxEstado) == 0 )
 					{
 						fprintf(pFile,"%d, %d, %s, %d, %d, %d\n",
-								auxIdVenta, auxIdCliente, auxNombreArchivo,auxCantidad,auxZona, auxEstado );
+								auxIdVenta, auxIdCliente, auxNombreArchivo,auxCantidad,auxZona, auxEstado);
 					}
 
 				}
@@ -180,24 +201,22 @@ int controller_addCliente(LinkedList* this)
 		   (utn_getNombre("\nIngrese el apellido del cliente: ", "\nEse no es un nombre valido\n", bufferApellido, 2,SIZECLIENTE) == 0) &&
 		   (utn_getNumero("\nIngrese el cuit del cliente: ", "\nEse no es un cuit valido\n", &bufferCuit, 2,0,999999999) == 0))
 		{
-
-			if(controller_asignarIdCliente(this, &bufferId) == 0 &&
-			   cliente_setId(bufferCliente, bufferId)==0 &&
-			   cliente_setNombre(bufferCliente, bufferNombre)==0 &&
-			   cliente_setApellido(bufferCliente, bufferApellido)==0 &&
-			   cliente_setCuit(bufferCliente, bufferCuit)==0)
-
+			if(cliente_buscarCuitRepetido(this, bufferCuit) == 0)
 			{
-				if(ll_contains(this, &bufferCuit) == 0)
+				if(controller_asignarIdCliente(this, &bufferId) == 0 &&
+				   cliente_setId(bufferCliente, bufferId)==0 &&
+				   cliente_setNombre(bufferCliente, bufferNombre)==0 &&
+				   cliente_setApellido(bufferCliente, bufferApellido)==0 &&
+				   cliente_setCuit(bufferCliente, bufferCuit)==0)
 				{
 					printf("\nEl cliente dado de alta tiene el ID: %d", bufferId);
 					ll_add(this, bufferCliente);
 					retorno = 0;
 				}
-				else
-				{
-					printf("\nError: Ya existe un cliente con el cuit %d .", bufferCuit);
-				}
+			}
+			else
+			{
+				printf("\nError: Ya existe un cliente con el cuit %d .", bufferCuit);
 			}
 		}
 		else
@@ -205,9 +224,9 @@ int controller_addCliente(LinkedList* this)
 			printf("\nSurgio un error durante la alta\n");
 		}
 	}
-
     return retorno;
 }
+
 int controller_venderAfiches(LinkedList* this, LinkedList* this2 )
 {
 	int retorno = -1;
@@ -256,7 +275,34 @@ int controller_venderAfiches(LinkedList* this, LinkedList* this2 )
 	return retorno;
 }
 
+int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
+{
+	int retorno = -1;
+	int auxIdVenta;
+	LinkedList* listaNoCobrados = NULL;
 
+	if(this1 != NULL && this2 != NULL)
+	{
+		printf("\nID VENTA - ID CLIENTE -    NOMBRE ARCHIVO    - CANTIDAD AFICHES- ZONA - ESTADO\n");
+		listaNoCobrados = ll_filter(this2, venta_listarVentasSinCobrar);
+		if(controller_printVentas(listaNoCobrados) == 0 &&
+		   utn_getNumero("\n\nIngrese el ID de la venta que quiere modificar: ", "\nEse no es un id valido\n",
+						&auxIdVenta, 2,1,99999) == 0)
+		{
+			if( cliente_imprimirClienteDeUnaVenta(this1, listaNoCobrados, auxIdVenta) == 0)
+			{
+				printf("\nHasta aca todo bien\n");
+				retorno = 0;
+			}
+			else
+			{
+				printf("\nEse ID no es modificable.");
+			}
+		}
+	}
+
+	return retorno;
+}
 int controller_printClientes(LinkedList* this)
 {
 	int retorno = -1;
@@ -285,13 +331,38 @@ int controller_printClientes(LinkedList* this)
 
 	return retorno;
 }
-int controller_saveOneClientAsText(char* path , LinkedList* this)
+
+int controller_printVentas(LinkedList* this)
 {
 	int retorno = -1;
 	int len;
-	if(path != NULL && this != NULL)
+	Venta* bufferVenta;
+	int auxIdVenta;
+	int auxIdCliente;
+	char auxNombreArchivo[SIZEVENTAS];
+	int auxCantidad;
+	int auxZona;
+	int auxEstado;
+
+	if(this != NULL)
 	{
-	//	for(int i =)
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferVenta = (Venta*) ll_get(this, i);
+			if(venta_getIdVenta(bufferVenta,&auxIdVenta )== 0  &&
+			   venta_getIdCliente(bufferVenta,&auxIdCliente )== 0  &&
+			   venta_getNombreArchivo(bufferVenta,auxNombreArchivo) == 0 &&
+			   venta_getCantidadAfiches(bufferVenta,&auxCantidad) == 0 &&
+			   venta_getZona(bufferVenta,&auxZona) == 0 &&
+			   venta_getEstadoCobranza(bufferVenta,&auxEstado) == 0 )
+			{
+				printf("\n%d, %d, %s, %d, %d, %d\n",
+					  auxIdVenta, auxIdCliente, auxNombreArchivo,auxCantidad,auxZona, auxEstado);
+			}
+
+		}
+		retorno = 0;
 	}
 
 	return retorno;
@@ -412,5 +483,77 @@ int controller_buscarClientePorId(LinkedList* this, int id)
 	return retorno;
 }
 
+int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int id)
+{
+	int retorno = -1;
+	int len;
+	Venta* bufferVenta;
+	Cliente* bufferCliente;
+	int auxIdCliente;
+	int idABuscar;
+	char auxNombre[SIZECLIENTE];
+	char auxApellido[SIZECLIENTE];
+	int auxCuit;
+
+	if(this1 != NULL && this2 != NULL)
+	{
+		len = ll_len(this1);
+		bufferVenta = controller_buscarVentaPorId(this2, id);
+		for(int i = 0; i < len; i++)
+		{
+			bufferCliente = (Cliente*) ll_get (this1, i);
+
+			if(cliente_getId(bufferCliente, &auxIdCliente) == 0 &&
+			   venta_getIdCliente(bufferVenta,&idABuscar ) == 0 &&
+			   auxIdCliente == idABuscar &&
+			   cliente_getNombre(bufferCliente, auxNombre) == 0 &&
+		       cliente_getApellido(bufferCliente, auxApellido) == 0 &&
+			   cliente_getCuit(bufferCliente, &auxCuit) == 0)
+			{
+				printf("\nNombre: %s - Apellido: %s - Cuit: %d", auxNombre, auxApellido, auxCuit );
+				retorno = 0;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+
+int cliente_buscarCuitRepetido(LinkedList* this, int cuit)
+{
+	int retorno = -1;
+	int len;
+	Cliente* bufferCliente;
+	int auxCuit;
+
+	if(this != NULL && cuit > 0)
+	{
+		retorno = 0;
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferCliente = (Cliente*) ll_get(this, i);
+			if(bufferCliente != NULL &&
+			   cliente_getCuit(bufferCliente, &auxCuit) == 0 &&
+			   cuit == auxCuit)
+			{
+				retorno = 1;
+				break;
+			}
+		}
+	}
+	return retorno;
+}
+
+int cliente_mostrarClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int id)
+{
+	int retorno = -1;
+
+	if(this1 != NULL && this2 != NULL && id >0)
+	{
+
+	}
+	return retorno;
+}
 
 

@@ -571,6 +571,7 @@ int ll_map(LinkedList* this, int (*pFunc)(void*))
 			pElemento = ll_get(this, i);
 			pFunc(pElemento);
 		}
+		returnAux = 0;
 	}
 
 	return returnAux;
@@ -621,28 +622,26 @@ int ll_reduceFloat(LinkedList* this, float (*pFunc)(void*), float* pResultado)
 	return returnAux;
 }
 
-int ll_filter(LinkedList* this, int (*pFunc)(void*))
+LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*))
 {
-	int returnAux = -1;
 	int len;
 	int i = 0;
 	void* pElemento;
+	LinkedList* newList = NULL;
 
 	if(this != NULL && pFunc != NULL)
 	{
+		newList = ll_newLinkedList();
 		len = ll_len(this);
-		while ( i  < len)
+		while (i < len)
 		{
 			pElemento = ll_get(this, i);
-			if(pFunc(pElemento) == 0 )
+			if(pFunc(pElemento) == 1 )
 			{
-				ll_remove(this, i);
+				ll_add(newList, pElemento);
 			}
-			else
-			{
-				i++;
-			}
+			i++;
 		}
 	}
-	return returnAux;
+	return newList;
 }
