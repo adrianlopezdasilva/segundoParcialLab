@@ -375,7 +375,7 @@ int venta_listarVentasSinCobrar(void* this)
 
 }
 
-void* controller_buscarVentaPorId(LinkedList* this, int id)
+Venta* venta_buscarVentaPorId(LinkedList* this, int id)
 {
 	int len;
 	Venta* bufferVenta = NULL;
@@ -396,3 +396,5 @@ void* controller_buscarVentaPorId(LinkedList* this, int id)
 	}
 	return bufferVenta;
 }
+
+

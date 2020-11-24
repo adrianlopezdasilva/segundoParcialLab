@@ -4,17 +4,18 @@
  *  Created on: 2020/11/20
  *      Author: PC
  */
-
+#include "LinkedList.h"
 #ifndef CLIENTES_H_
 #define CLIENTES_H_
 #define SIZECLIENTE 30
+#define SIZECUIT 20
 
 typedef struct
 {
 	int idCliente;
 	char nombre[SIZECLIENTE];
 	char apellido[SIZECLIENTE];
-	int cuit;
+	char cuit[SIZECUIT];
 }Cliente;
 
 Cliente* cliente_new();
@@ -30,8 +31,10 @@ int cliente_getNombre(Cliente* this,char* nombre);
 int cliente_setApellido(Cliente* this,char* apellido);
 int cliente_getApellido(Cliente* this,char* apellido);
 
-int cliente_setCuit(Cliente* this,int cuit);
-int cliente_getCuit(Cliente* this,int* cuit);
+int cliente_setCuit(Cliente* this,char* cuit);
+int cliente_getCuit(Cliente* this,char* cuit);
+int cliente_buscarClientePorId(LinkedList* this, int id);
+Cliente* cliente_devolverClientePorId(LinkedList* this, int id);
 int cliente_compareByName(void* thisOne , void* thisTwo);
 int cliente_compareByHoursWorked(void* thisOne , void* thisTwo);
 int cliente_compareBySalary(void* thisOne , void* thisTwo);

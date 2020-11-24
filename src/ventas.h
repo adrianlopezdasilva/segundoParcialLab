@@ -38,5 +38,5 @@ int venta_getZona(Venta* this,int* zona);
 int venta_setEstadoCobranza(Venta* this,int estadoCobranza);
 int venta_getEstadoCobranza(Venta* this,int* estadoCobranza);
 int venta_listarVentasSinCobrar(void* this);
-void* controller_buscarVentaPorId(LinkedList* this, int id);
+Venta* venta_buscarVentaPorId(LinkedList* this, int id);
 #endif /* VENTAS_H_ */

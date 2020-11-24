@@ -557,6 +557,12 @@ int ll_sort(LinkedList* this, int (*pFunc)(void* ,void*), int order)
 
 }
 
+/** \brief Recorre los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \return int Retorna  (-1) Error: si el puntero a la listas es NULL
+                         ( 0) Si ok
+ */
 int ll_map(LinkedList* this, int (*pFunc)(void*))
 {
 	int returnAux = -1;
@@ -577,6 +583,13 @@ int ll_map(LinkedList* this, int (*pFunc)(void*))
 	return returnAux;
 }
 
+/** \brief Acumula los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \param pResultado int* Puntero donde se guardara el resultado de la funcion
+ * \return int Retorna  (-1) Error: si el puntero a la listas es NULL
+                                ( 0) Si ok
+ */
 int ll_reduceInt(LinkedList* this, int (*pFunc)(void*), int* pResultado)
 {
 	int returnAux = -1;
@@ -599,6 +612,13 @@ int ll_reduceInt(LinkedList* this, int (*pFunc)(void*), int* pResultado)
 	return returnAux;
 }
 
+/** \brief Acumula los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \param pResultado float* Puntero donde se guardara el resultado de la funcion
+ * \return int Retorna  (-1) Error: si el puntero a la listas es NULL
+                                ( 0) Si ok
+ */
 
 int ll_reduceFloat(LinkedList* this, float (*pFunc)(void*), float* pResultado)
 {
@@ -622,6 +642,12 @@ int ll_reduceFloat(LinkedList* this, float (*pFunc)(void*), float* pResultado)
 	return returnAux;
 }
 
+/** \brief Ordena los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \param order int  [1] Indica orden ascendente - [0] Indica orden descendente
+ * \return LinkedList Retorna una nueva lista con los elementos deseados
+ */
 LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*))
 {
 	int len;

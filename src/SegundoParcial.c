@@ -45,7 +45,7 @@ int main(void)
 		{
 			switch(opcion)
 			{
-			case 1: // NECESITO VERIFICAR MEJOR EL CUIT, EVITAR QUE SE GUARDE 2 VECES LA LISTA
+			case 1:
 					if(controller_addCliente(listaClientes) == 0 &&
 					   controller_clienteSaveAsText("clientes.txt",listaClientes) == 0)
 					{
@@ -68,12 +68,20 @@ int main(void)
 					}
 					break;
 			case 3:
-					if(controller_modificarVenta(listaClientes,listaVentas) == 0)
+					if(controller_modificarVenta(listaClientes,listaVentas) == 0 &&
+					   controller_ventaSaveAsText("ventas.txt",listaVentas) == 0)
 					{
-						printf("\nTodo bien \n");
+						printf("\nModificacion lograda con exito \n");
 					}
 					break;
 
+			case 4:
+					if(controller_cobrarVenta(listaClientes,listaVentas) == 0 &&
+					   controller_ventaSaveAsText("ventas.txt",listaVentas) == 0)
+					{
+						printf("\nVenta cobrada exitosamente\n");
+					}
+					break;
 			case 5:
 					if(informe_informeCobros("cobrados.txt",listaClientes,listaVentas) == 0)
 					{
@@ -85,6 +93,9 @@ int main(void)
 					{
 						printf("\nTodo bien \n");
 					}
+					break;
+			case 7:
+					informe_ventaConMayorAfiches(listaClientes, listaVentas);
 					break;
 			}
 			flagCargado = 1;

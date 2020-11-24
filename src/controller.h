@@ -17,14 +17,14 @@ int controller_clienteFindNextId(LinkedList* this);
 int controller_printClientes(LinkedList* this);
 int controller_venderAfiches(LinkedList* this,LinkedList* this2);
 int controller_modificarVenta(LinkedList* this1, LinkedList* this2);
+int controller_cobrarVenta(LinkedList* this1, LinkedList* this2);
 int controller_encontrarIdMaximoCliente (LinkedList* this, int* id);
 int controller_asignarIdCliente(LinkedList* this, int* id);
 int controller_encontrarIdMaximoVenta (LinkedList* this, int* id);
 int controller_asignarIdVenta(LinkedList* this, int* id);
-int controller_buscarClientePorId(LinkedList* this, int id);
 int controller_ventaSaveAsText(char* path , LinkedList* this);
 int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int id);
-int cliente_buscarCuitRepetido(LinkedList* this, int cuit);
+int cliente_buscarCuitRepetido(LinkedList* this, char* cuit);
 int controller_printVentas(LinkedList* this);
 
 #endif /* CONTROLLER_H_ */

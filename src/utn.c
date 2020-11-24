@@ -270,18 +270,17 @@ int esNumerica(char* cadena, int limite)
 {
 	int retorno = 1; // VERDADERO
 	int i;
-	for(i=0;i<limite && cadena[i] != '\0';i++)
+	if(cadena != NULL && limite > 0)
 	{
-		if(i==0 && (cadena[i] == '+' || cadena[i] == '-'))
+		for(i=0; i<limite && cadena[i] != '\0' ;i++)
 		{
-			continue;
+			if(cadena[i] > '9' && cadena[i] < '0')
+			{
+				retorno = 0;
+				break;
+			}
+			//CONTINUE
 		}
-		if(cadena[i] > '9' || cadena[i] < '0')
-		{
-			retorno = 0;
-			break;
-		}
-		//CONTINUE
 	}
 	//BREAK
 	return retorno;

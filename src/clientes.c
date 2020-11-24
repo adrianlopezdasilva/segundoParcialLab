@@ -10,9 +10,8 @@
 #include <string.h>
 #include "clientes.h"
 #include "utn.h"
+#include "LinkedList.h"
 
-
-static int isValidCuit();
 /** \brief Crea un nuevo Cliente
  *
  * \param void LinkedList* es donde esta contenida la direccion de memoria de la lista
@@ -44,16 +43,15 @@ Cliente* cliente_newParametros(char* idStr,char* nombreStr,char* apellidoStr, ch
 {
 	Cliente* this = cliente_new();
 	int auxId;
-	int auxCuit;
 
 	auxId= atoi(idStr);
-	auxCuit= atoi(cuitStr);
+
 	if(this != NULL)
 	{
 		if((cliente_setId(this, auxId)) == 0 &&
 			(cliente_setNombre(this, nombreStr)) == 0 &&
 			(cliente_setApellido(this, apellidoStr)) == 0 &&
-			(cliente_setCuit(this, auxCuit) == 0))
+			(cliente_setCuit(this, cuitStr) == 0))
 		{
 			return this;
 		}
@@ -124,7 +122,7 @@ int cliente_setNombre(Cliente* this,char* nombre)
 	{
 		if(esUnNombreValido(nombre,SIZECLIENTE)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->nombre,nombre, sizeof(this->nombre));
+			strncpy(this->nombre,nombre,(int) sizeof(this->nombre));
 			retorno = 0;
 		}
 
@@ -164,7 +162,7 @@ int cliente_setApellido(Cliente* this,char* apellido)
 	{
 		if(esUnNombreValido(apellido,SIZECLIENTE)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->apellido,apellido, sizeof(this->apellido));
+			strncpy(this->apellido,apellido,(int) sizeof(this->apellido));
 			retorno = 0;
 		}
 
@@ -196,16 +194,17 @@ int cliente_getApellido(Cliente* this,char* apellido)
  *
  * \return -1 si hay error, 0 si funciona bien
  */
-int cliente_setCuit(Cliente* this,int cuit)
+int cliente_setCuit(Cliente* this,char* cuit)
 {
 	int retorno = -1;
-	if(this != NULL && cuit >0)
+	if(this != NULL && cuit != NULL)
 	{
-		if(isValidCuit(cuit) == 1)
+		if(esNumerica(cuit,SIZECUIT)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			this->cuit =cuit;
+			strncpy(this->cuit,cuit,(int) sizeof(this->cuit));
 			retorno = 0;
 		}
+
 	}
 	return retorno;
 }
@@ -216,15 +215,62 @@ int cliente_setCuit(Cliente* this,int cuit)
  *
  * \return -1 si hay error, 0 si funciona bien
  */
-int cliente_getCuit(Cliente* this,int* cuit)
+int cliente_getCuit(Cliente* this,char* cuit)
 {
 	int retorno = -1;
-	if(this != NULL)
+	if(this != NULL && cuit != NULL)
 	{
-		*cuit = this->cuit;
+		strncpy(cuit,this->cuit, SIZECUIT);
 		retorno = 0;
 	}
 	return retorno;
+}
+
+int cliente_buscarClientePorId(LinkedList* this, int id)
+{
+	int retorno = -1;
+	int len;
+	Cliente* bufferCliente;
+	int auxId;
+
+	if(this != NULL)
+	{
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferCliente = (Cliente*) ll_get (this, i);
+			cliente_getId(bufferCliente, &auxId);
+			if(auxId == id)
+			{
+				retorno = i;
+				break;
+			}
+		}
+	}
+
+	return retorno;
+}
+
+Cliente* cliente_devolverClientePorId(LinkedList* this, int id)
+{
+	int len;
+	Cliente* bufferCliente = NULL;
+	int auxId;
+
+	if(this != NULL)
+	{
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferCliente = (Cliente*) ll_get (this, i);
+			cliente_getId(bufferCliente, &auxId);
+			if(auxId == id)
+			{
+				break;
+			}
+		}
+	}
+	return bufferCliente;
 }
 /** \brief Compara la lista de clientes segun su nombre
  *
@@ -233,6 +279,7 @@ int cliente_getCuit(Cliente* this,int* cuit)
  *
  * \return 1 si el primer campo es mas grande o -1 de lo contrario, 0 si hay error
  */
+/*
 int cliente_compareByName(void* thisOne , void* thisTwo)
 {
 	int retorno = 0;
@@ -261,7 +308,7 @@ int cliente_compareByName(void* thisOne , void* thisTwo)
 		}
 	}
 	return retorno;
-}
+} */
 
 /** \brief Compara la lista de clientes segun sus horas trabajadas
  *
@@ -270,6 +317,7 @@ int cliente_compareByName(void* thisOne , void* thisTwo)
  *
  * \return 1 si el primer campo es mas grande o -1 de lo contrario, 0 si hay error
  */
+/*
 int cliente_compareByApellido(void* thisOne , void* thisTwo)
 {
 	int retorno = 0;
@@ -298,7 +346,7 @@ int cliente_compareByApellido(void* thisOne , void* thisTwo)
 		}
 	}
 	return retorno;
-}
+} */
 /** \brief Compara la lista de clientes segun su salario
  *
  * \param thisOne void* El primer campo a comprar
@@ -306,6 +354,7 @@ int cliente_compareByApellido(void* thisOne , void* thisTwo)
  *
  * \return 1 si el primer campo es mas grande o -1 de lo contrario, 0 si hay error
  */
+/*
 int Cliente_compareByCuit(void* thisOne , void* thisTwo)
 {
 	int retorno = 0;
@@ -335,12 +384,9 @@ int Cliente_compareByCuit(void* thisOne , void* thisTwo)
 	}
 	return retorno;
 }
+*/
 
 
-int isValidCuit()
-{
-	return 1;
-}
 
 
 
