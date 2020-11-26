@@ -37,6 +37,9 @@ int venta_setZona(Venta* this,int zona);
 int venta_getZona(Venta* this,int* zona);
 int venta_setEstadoCobranza(Venta* this,int estadoCobranza);
 int venta_getEstadoCobranza(Venta* this,int* estadoCobranza);
-int venta_listarVentasSinCobrar(void* this);
+int venta_buscarVentasSinCobrar(void* this);
+int venta_buscarVentasCobradas(void* this);
 Venta* venta_buscarVentaPorId(LinkedList* this, int id);
+int venta_ventasDeUnCliente(void* pElement, void* arg);
+int venta_imprimirUnaVenta(void* this);
 #endif /* VENTAS_H_ */

@@ -33,8 +33,8 @@ Cliente* cliente_new(void)
  *
  *\param idStr char* string que contiene el id a utilizar
  *\param nombreStr char* string que contiene el nombre a utilizar
- *\param horasTrabajadasStr char* string que contiene las horas trabajadas a utilizar
- *\param cuitStr char* string que contiene el cuit a utilizara
+ *\param apellidoStr char* string que contiene el apellido a utilizar
+ *\param cuitStr char* string que contiene el cuit a utilizar
  *
  * \return Cliente* en caso de que salga bien, NULL de lo contrario
  *
@@ -122,7 +122,7 @@ int cliente_setNombre(Cliente* this,char* nombre)
 	{
 		if(esUnNombreValido(nombre,SIZECLIENTE)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->nombre,nombre,(int) sizeof(this->nombre));
+			strncpy(this->nombre,nombre, SIZECLIENTE);
 			retorno = 0;
 		}
 
@@ -151,7 +151,7 @@ int cliente_getNombre(Cliente* this,char* nombre)
 /** \brief Fija el apellido
  *
  * \param this Cliente* el Cliente a utilizar
- * \param horasTrabajadas int las horas trabajadas a fijar
+ * \param apellido char* el apellido a fijar
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -162,7 +162,7 @@ int cliente_setApellido(Cliente* this,char* apellido)
 	{
 		if(esUnNombreValido(apellido,SIZECLIENTE)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->apellido,apellido,(int) sizeof(this->apellido));
+			strncpy(this->apellido,apellido, SIZECLIENTE);
 			retorno = 0;
 		}
 
@@ -172,7 +172,7 @@ int cliente_setApellido(Cliente* this,char* apellido)
 /** \brief Obtiene el apellido de un cliente
  *
  * \param this Cliente* el Cliente a utilizar
- * \param horasTrabajadas int* las horas trabajadas obtenidas
+ * \param apellido char* el apellido obtenido
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -199,12 +199,11 @@ int cliente_setCuit(Cliente* this,char* cuit)
 	int retorno = -1;
 	if(this != NULL && cuit != NULL)
 	{
-		if(esNumerica(cuit,SIZECUIT)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
+		if(isValidCuit(cuit)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->cuit,cuit,(int) sizeof(this->cuit));
+			strncpy(this->cuit,cuit, SIZECUIT);
 			retorno = 0;
 		}
-
 	}
 	return retorno;
 }
@@ -226,6 +225,13 @@ int cliente_getCuit(Cliente* this,char* cuit)
 	return retorno;
 }
 
+/** \brief Busca una coincidencia de un id pasado por parametro con un id existente en la lista
+ *
+ * \param this Linkedlist* la lista a utilizar
+ * \param id int el id a comparar
+ *
+ * \return -1 si hay error o el id deseado si funciona bien
+ */
 int cliente_buscarClientePorId(LinkedList* this, int id)
 {
 	int retorno = -1;
@@ -251,6 +257,13 @@ int cliente_buscarClientePorId(LinkedList* this, int id)
 	return retorno;
 }
 
+/** \brief Busca una coincidencia de un id pasado por parametro con un id existente en la lista
+ *
+ * \param this Linkedlist* la lista a utilizar
+ * \param id int el id a comparar
+ *
+ * \return Cliente* en caso de que salga bien, NULL de lo contrario
+ */
 Cliente* cliente_devolverClientePorId(LinkedList* this, int id)
 {
 	int len;
@@ -271,6 +284,39 @@ Cliente* cliente_devolverClientePorId(LinkedList* this, int id)
 		}
 	}
 	return bufferCliente;
+}
+
+/** \brief Busca si hay una coincidencia entre un cuit ingresado y uno ya existente
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param cuit char* el cuit a comprar
+ * \return -1 si hay error, 0 si la lista no contiene ese cuit, 1 si lo contiene
+ */
+int cliente_buscarCuitRepetido(LinkedList* this, char* cuit)
+{
+	int retorno = -1;
+	int len;
+	Cliente* bufferCliente;
+	char auxCuit[SIZECUIT];
+
+	if(this != NULL && cuit != NULL)
+	{
+		retorno = 0;
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			bufferCliente = (Cliente*) ll_get(this, i);
+			if(bufferCliente != NULL &&
+			   cliente_getCuit(bufferCliente, auxCuit) == 0 &&
+			   strncmp(cuit, auxCuit,SIZECUIT) == 0)
+			{
+				retorno = 1;
+				printf("\nYa existe un cliente con el cuit:%s\n", auxCuit);
+				break;
+			}
+		}
+	}
+	return retorno;
 }
 /** \brief Compara la lista de clientes segun su nombre
  *

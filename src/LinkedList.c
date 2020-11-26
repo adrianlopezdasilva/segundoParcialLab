@@ -642,10 +642,9 @@ int ll_reduceFloat(LinkedList* this, float (*pFunc)(void*), float* pResultado)
 	return returnAux;
 }
 
-/** \brief Ordena los elementos de la lista utilizando la funcion criterio recibida como parametro
+/** \brief Filtra los elementos de la lista utilizando la funcion criterio recibida como parametro
  * \param pList LinkedList* Puntero a la lista
  * \param pFunc (*pFunc) Puntero a la funcion criterio
- * \param order int  [1] Indica orden ascendente - [0] Indica orden descendente
  * \return LinkedList Retorna una nueva lista con los elementos deseados
  */
 LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*))
@@ -662,7 +661,7 @@ LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*))
 		while (i < len)
 		{
 			pElemento = ll_get(this, i);
-			if(pFunc(pElemento) == 1 )
+			if(pFunc(pElemento) == 0)
 			{
 				ll_add(newList, pElemento);
 			}
@@ -670,4 +669,61 @@ LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*))
 		}
 	}
 	return newList;
+}
+
+/** \brief Filtra los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \param order int  [1] Indica orden ascendente - [0] Indica orden descendente
+ * \nparam arg Void* Puntero al argumento
+ * \return LinkedList Retorna una nueva lista con los elementos deseados
+ */
+LinkedList* ll_filterArg(LinkedList* this, int (*pFunc)(void*,void*), void* arg)
+{
+	int len;
+	int i = 0;
+	void* pElemento;
+	LinkedList* newList = NULL;
+
+	if(this != NULL && pFunc != NULL)
+	{
+		newList = ll_newLinkedList();
+		len = ll_len(this);
+		while (i < len)
+		{
+			pElemento = ll_get(this, i);
+			if(pFunc(pElemento, arg) == 0 )
+			{
+				ll_add(newList, pElemento);
+			}
+			i++;
+		}
+	}
+	return newList;
+}
+
+/** \brief Acumula los elementos de la lista utilizando la funcion criterio recibida como parametro
+ * \param pList LinkedList* Puntero a la lista
+ * \param pFunc (*pFunc) Puntero a la funcion criterio
+ * \param pResultado int* Puntero donde se guardara el resultado de la funcion
+ * \param arg Void* Puntero al argumento
+ * \return int Retorna  (-1) Error: si el puntero a la listas es NULL
+                         ( 0) Si ok
+ */
+int ll_reduceIntArg(LinkedList* this, int (*pFunc)(void*, void*), void* arg)
+{
+	int len;
+	void* pElemento;
+	int acumulador = 0;
+
+	if(this != NULL && pFunc != NULL)
+	{
+		len = ll_len(this);
+		for(int i = 0; i < len; i++)
+		{
+			pElemento = ll_get(this, i);
+			acumulador = acumulador + pFunc(pElemento, arg);
+		}
+	}
+	return acumulador;
 }

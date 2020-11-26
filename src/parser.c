@@ -10,7 +10,7 @@
 #include "clientes.h"
 #include "ventas.h"
 
-/** \brief Parsea los datos los datos de los clientes desde el archivo data.csv (modo texto).
+/** \brief Parsea los datos los datos de los clientes desde el archivo clientes.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
  * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
@@ -85,7 +85,7 @@ int parser_ClienteFromBinary(FILE* pFile , LinkedList* this)
 	return retorno;
 }
 
-/** \brief Parsea los datos los datos de los clientes desde el archivo data.csv (modo texto).
+/** \brief Parsea los datos los datos de los clientes desde el archivo ventas.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
  * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista

@@ -327,6 +327,7 @@ static int getFloat(float *pResultado)
 	}
 	return retorno;
 }
+
 static int isFloat(char *cadena)
 {
 	int retorno = 1; // VERDADERO
@@ -358,16 +359,58 @@ static int isFloat(char *cadena)
   return retorno;
 }
 
-int isValidCuit(char* cuit)
+/**
+* \brief Solicita un CUIT al usuario y lo valida.
+ * \param char* mensaje, Es el mensaje a ser mostrado al usuario
+ * \param char* mensaje, Es el mensaje de error a ser mostrado al usuario
+ * \param char* pResultado, puntero al espacio de memoria donde se dejara el valor obtenido
+ * \param int reintentos, cantidad de oportunidades para ingresar el dato
+ * \param int limite, indica la cantidad de letras maxima del nombre
+ * \return 0 en caso de exito, -1 de caso contrario
+ *
+ */
+int utn_getCuit(char* mensaje, char* mensajeError, char* pResultado,int reintentos, int limite)
 {
-    int retorno= 1;
-   /* int i;
-    for(i=0;  cuit[i]!='\0';i++)
-    {
-        if((cuit[i]<'0' || cuit[i]>'9') && (cuit[i]!= '-' ))
-        {
-            retorno = -1;
-        }
-    }*/
-    return retorno;
+	int retorno = -1;
+	char bufferString[LIMITE_BUFFER_STRING];
+	if ( mensaje != NULL && mensajeError != NULL && pResultado != NULL && reintentos >= 0 && limite >0)
+	{
+		do
+		{
+			printf("%s",mensaje);
+			if(myGets(bufferString,LIMITE_BUFFER_STRING) == 0 &&
+				strnlen(bufferString,sizeof(bufferString)-1)<=limite &&
+				isValidCuit(bufferString) != 0)
+			{
+				retorno = 0;
+				strncpy(pResultado,bufferString,limite);
+				break;
+			}
+			else
+			{
+				printf("%s",mensajeError);
+				reintentos--;
+			}
+		}
+		while(reintentos > 0);
+	}
+	return retorno;
+}
+
+int isValidCuit(char* cadena)
+{
+	int retorno = 0;
+
+	if(cadena != NULL)
+	{
+		if(cadena[0] == '2' && (cadena[1] == '0' || cadena[1] == '7'))
+		{
+			retorno = 1;
+		}
+		else if (cadena[0] == '3'&& (cadena[1] == '0' || cadena[1] == '3' || cadena[1] == '4'))
+		{
+			retorno = 1;
+		}
+	}
+	return retorno;
 }

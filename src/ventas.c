@@ -156,9 +156,9 @@ int venta_getIdCliente(Venta* this,int* idCliente)
 	}
 	return retorno;
 }
-/** \brief Fija el nombreArchivo de un empleado
+/** \brief Fija el nombreArchivo de una venta
  *
- * \param this Venta* el venta a utilizar
+ * \param this Venta* la venta a utilizar
  * \param nombreArchivo char* el nombreArchivo a fijar
  *
  * \return -1 si hay error, 0 si funciona bien
@@ -170,7 +170,7 @@ int venta_setNombreArchivo(Venta* this,char* nombreArchivo)
 	{
 		if(esUnNombreValido(nombreArchivo,SIZEVENTAS)== 1 ) // ESTA FUNCION BUSCA SI HAY UN ERROR
 		{
-			strncpy(this->nombreArchivo,nombreArchivo, sizeof(this->nombreArchivo));
+			strncpy(this->nombreArchivo,nombreArchivo, SIZEVENTAS);
 			retorno = 0;
 		}
 
@@ -178,9 +178,9 @@ int venta_setNombreArchivo(Venta* this,char* nombreArchivo)
 	return retorno;
 }
 
-/** \brief Obtiene el nombreArchivo de un empleado
+/** \brief Obtiene el nombreArchivo de una venta
  *
- * \param this Venta* el venta a utilizar
+ * \param this Venta* la venta a utilizar
  * \param nombreArchivo char* el nombreArchivo obtenido
  *
  * \return -1 si hay error, 0 si funciona bien
@@ -196,10 +196,10 @@ int venta_getNombreArchivo(Venta* this,char* nombreArchivo)
 	return retorno;
 }
 
-/** \brief Fija las horas trabajadas de un empleado
+/** \brief Fija la cantidad de afiches de una venta
  *
- * \param this Venta* el venta a utilizar
- * \param cantidad int las horas trabajadas a fijar
+ * \param this Venta* la venta a utilizar
+ * \param cantidad int la cantidad de afiches  a fijar
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -217,10 +217,10 @@ int venta_setCantidadAfiches(Venta* this,int cantidad)
 	}
 	return retorno;
 }
-/** \brief Obtiene las horas trabajadas de un empleado
+/** \brief Obtiene la cantidad de afiches de una venta
  *
- * \param this Venta* el venta a utilizar
- * \param cantidad int* las horas trabajadas obtenidas
+ * \param this Venta* la venta a utilizar
+ * \param cantidad int* la cantidad de afiches obtenido
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -235,10 +235,10 @@ int venta_getCantidadAfiches(Venta* this,int* cantidad)
 	return retorno;
 }
 
-/** \brief Fija el zona  de un empleado
+/** \brief Fija el zona  de una venta
  *
- * \param this Venta* el venta a utilizar
- * \param zona int el zona a fijar
+ * \param this Venta* la venta a utilizar
+ * \param zona int la zona a fijar
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -255,10 +255,10 @@ int venta_setZona(Venta* this,int zona)
 	}
 	return retorno;
 }
-/** \brief Obtiene el zona de un empleado
+/** \brief Obtiene la zona de una venta
  *
- * \param this Venta* el venta a utilizar
- * \param zona int* el zona obtenido
+ * \param this Venta* la venta a utilizar
+ * \param zona int* la zona obtenido
  *
  * \return -1 si hay error, 0 si funciona bien
  */
@@ -276,7 +276,7 @@ int venta_getZona(Venta* this,int* zona)
 
 /** \brief Valida que la zona este dentro de los rangos aceptables
  *
- * \param zona int El zona a validad
+ * \param zona int La zona a validar
  * \return -1 si hay error, 1 si funciona bien
  */
 static int isValidZona (int zona)
@@ -333,48 +333,68 @@ int venta_setEstadoCobranza(Venta* this,int estadoCobranza)
  * \param zona int El zona a validad
  * \return -1 si hay error, 1 si funciona bien
  */
-static int isValidCantidadAfiches(int horas)
+static int isValidCantidadAfiches(int cantidad)
 {
 	int retorno = 1;
 
-	if(horas < 0 || horas > 1000000000)
+	if(cantidad < 0 || cantidad > 100)
 	{
 		retorno = -1;
 	}
 
 	return retorno;
 }
-
-int venta_listarVentasSinCobrar(void* this)
+/** \brief Funcion criterio para ll_filter, busca las ventas sin cobrar
+ *
+ * \param this void* La lista a ser usada
+ * \return -1 en caso de que haya error, 0 si bien
+ */
+int venta_buscarVentasSinCobrar(void* this)
 {
 	int retorno = -1;
 	Venta* bufferVenta = (Venta*) this;
 	int auxEstado;
-	int auxIdVenta;
-	int auxIdCliente;
-	int auxCantidad;
-	char auxNombreArchivo[SIZEVENTAS];
-	int auxZona;
 
 	if(this != NULL)
 	{
-		if(venta_getEstadoCobranza(this, &auxEstado)== 0 &&
-		   auxEstado == SINCOBRAR &&
-		   venta_getIdCliente(bufferVenta, &auxIdCliente)==0 &&
-		   venta_getIdVenta(bufferVenta, &auxIdVenta) == 0 &&
-		   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0 &&
-		   venta_getNombreArchivo(bufferVenta, auxNombreArchivo)==0 &&
-		   venta_getZona(bufferVenta, &auxZona)==0 )
+		if(venta_getEstadoCobranza(bufferVenta, &auxEstado)== 0 &&
+		   auxEstado == SINCOBRAR )
 		{
 			retorno = 0;
-			printf("\n%d   \t-  %d\t - %s\t  - %d\t - %d\t - %d",
-					auxIdVenta,auxIdCliente,auxNombreArchivo, auxCantidad, auxZona, auxEstado);
 		}
 	}
 	return retorno;
-
 }
 
+/** \brief Funcion criterio para ll_filter, busca las ventas sin cobrar
+ *
+ * \param this void* La lista a ser usada
+ * \return -1 en caso de que haya error, 0 si bien
+ */
+int venta_buscarVentasCobradas(void* this)
+{
+	int retorno = -1;
+	Venta* bufferVenta = (Venta*) this;
+	int auxEstado;
+
+	if(this != NULL)
+	{
+		if(venta_getEstadoCobranza(bufferVenta, &auxEstado)== 0 &&
+		   auxEstado == COBRADA )
+		{
+			retorno = 0;
+		}
+	}
+	return retorno;
+}
+
+/** \brief Busca una coincidencia de un id pasado por parametro con un id existente en la lista
+ *
+ * \param this Linkedlist* la lista a utilizar
+ * \param id int el id a comparar
+ *
+ * \return Venta* en caso de que salga bien, NULL de lo contrario
+ */
 Venta* venta_buscarVentaPorId(LinkedList* this, int id)
 {
 	int len;
@@ -397,4 +417,48 @@ Venta* venta_buscarVentaPorId(LinkedList* this, int id)
 	return bufferVenta;
 }
 
+int venta_ventasDeUnCliente(void* pElement, void* arg)
+{
+	int retorno = -1;
+	int auxCantidad = 0;
+	int* auxIdCliente = (int*) arg;
+	Venta* bufferVenta = (Venta*) pElement;
+	int bufferId;
 
+	if(venta_getIdCliente(bufferVenta, &bufferId) == 0 &&
+	   bufferId == *auxIdCliente &&
+	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0)
+	{
+		retorno = auxCantidad;
+	}
+	return retorno;
+}
+
+int venta_imprimirUnaVenta(void* this)
+{
+	int retorno = -1;
+	Venta* bufferVenta = (Venta*) this;
+	int auxEstado;
+	int auxIdVenta;
+	int auxIdCliente;
+	int auxCantidad;
+	char auxNombreArchivo[SIZEVENTAS];
+	int auxZona;
+
+	if(this != NULL)
+	{
+		if(venta_getEstadoCobranza(bufferVenta, &auxEstado)== 0 &&
+		   venta_getIdCliente(bufferVenta, &auxIdCliente)==0 &&
+		   venta_getIdVenta(bufferVenta, &auxIdVenta) == 0 &&
+		   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0 &&
+		   venta_getNombreArchivo(bufferVenta, auxNombreArchivo)==0 &&
+		   venta_getZona(bufferVenta, &auxZona)==0 )
+		{
+			printf("\n%d - %d - %s -  %d - %d - %d",auxIdVenta, auxIdCliente, auxNombreArchivo, auxCantidad, auxZona, auxEstado);
+			retorno = 0;
+		}
+
+	}
+	return retorno;
+
+}

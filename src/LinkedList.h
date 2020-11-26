@@ -55,5 +55,7 @@ LinkedList* ll_clone(LinkedList* this);
 int ll_sort(LinkedList* this, int (*pFunc)(void* ,void*), int order);
 int ll_map(LinkedList* this, int (*pFunc)(void*));
 int ll_reduceInt(LinkedList* this, int (*pFunc)(void*), int* pResultado);
+int ll_reduceIntArg(LinkedList* this, int (*pFunc)(void*, void*), void* arg);
 int ll_reduceFloat(LinkedList* this, float (*pFunc)(void*), float* pResultado);
 LinkedList* ll_filter(LinkedList* this, int (*pFunc)(void*));
+LinkedList* ll_filterArg(LinkedList* this, int (*pFunc)(void*,void*), void* arg);

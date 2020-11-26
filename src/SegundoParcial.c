@@ -85,17 +85,18 @@ int main(void)
 			case 5:
 					if(informe_informeCobros("cobrados.txt",listaClientes,listaVentas) == 0)
 					{
-						printf("\nTodo bien \n");
+						printf("\nInforme realizado extiosamente\n");
 					}
 					break;
 			case 6:
 					if(informe_informeDeudas("a_cobrar.txt",listaClientes,listaVentas) == 0)
 					{
-						printf("\nTodo bien \n");
+						printf("\nInforme realizado extiosamente \n");
 					}
 					break;
 			case 7:
 					informe_ventaConMayorAfiches(listaClientes, listaVentas);
+					informe_clienteMayorAfichesVendidos(listaClientes, listaVentas);
 					break;
 			}
 			flagCargado = 1;

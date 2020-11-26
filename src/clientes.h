@@ -35,6 +35,7 @@ int cliente_setCuit(Cliente* this,char* cuit);
 int cliente_getCuit(Cliente* this,char* cuit);
 int cliente_buscarClientePorId(LinkedList* this, int id);
 Cliente* cliente_devolverClientePorId(LinkedList* this, int id);
+int cliente_buscarCuitRepetido(LinkedList* this, char* cuit);
 int cliente_compareByName(void* thisOne , void* thisTwo);
 int cliente_compareByHoursWorked(void* thisOne , void* thisTwo);
 int cliente_compareBySalary(void* thisOne , void* thisTwo);

@@ -14,7 +14,7 @@
 #include "ventas.h"
 #include "utn.h"
 
-/** \brief Carga los datos de los clientes desde el archivo data.csv (modo texto).
+/** \brief Carga los datos de los clientes desde el archivo clientes.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
  * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
@@ -38,7 +38,7 @@ int controller_clienteLoadFromText(char* path , LinkedList* this)
 /** \brief Guarda los datos de los clientes en el archivo clientes.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
- * \param pArrayListEmployee LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
  * \return int -1 si hay error o 0 si anduvo bien
  *
  */
@@ -103,7 +103,7 @@ int controller_ventaLoadFromText(char* path , LinkedList* this)
 /** \brief Guarda los datos de las ventas en el archivo ventas.txt (modo texto).
  *
  * \param path char* direccion donde se encuentra el archivo
- * \param pArrayListEmployee LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
  * \return int -1 si hay error o 0 si anduvo bien
  *
  */
@@ -189,45 +189,47 @@ int controller_addCliente(LinkedList* this)
 {
 	int retorno = -1;
 
-	Cliente* bufferCliente = cliente_new();
+	Cliente* bufferCliente;
 	int bufferId = 1000;
 	char bufferNombre[SIZECLIENTE];
 	char bufferApellido[SIZECLIENTE];
 	char bufferCuit[SIZECUIT];
 
-
 	if(this != NULL)
 	{
+		bufferCliente = cliente_new();
 		if((utn_getNombre("\nIngrese el nombre del cliente: ", "\nEse no es un nombre valido\n", bufferNombre, 2,SIZECLIENTE) == 0) &&
 		   (utn_getNombre("\nIngrese el apellido del cliente: ", "\nEse no es un nombre valido\n", bufferApellido, 2,SIZECLIENTE) == 0) &&
-		   (utn_getString("\nIngrese el cuit del cliente(solo numeros): ", "\nEse no es un cuit valido\n", bufferCuit, 2,SIZECUIT) == 0))
+		   (utn_getCuit("\nIngrese el cuit del cliente(solo numeros): ", "\nEse no es un cuit valido\n", bufferCuit, 2,SIZECUIT) == 0) &&
+		    cliente_buscarCuitRepetido(this, bufferCuit) == 0)
 		{
-			if(cliente_buscarCuitRepetido(this, bufferCuit) == 0)
-			{
-				if(controller_asignarIdCliente(this, &bufferId) == 0 &&
-				   cliente_setId(bufferCliente, bufferId)==0 &&
-				   cliente_setNombre(bufferCliente, bufferNombre)==0 &&
-				   cliente_setApellido(bufferCliente, bufferApellido)==0 &&
-				   cliente_setCuit(bufferCliente, bufferCuit)==0)
+			if(controller_asignarIdCliente(this, &bufferId) == 0 &&
+			   cliente_setId(bufferCliente, bufferId)==0 &&
+			   cliente_setNombre(bufferCliente, bufferNombre)==0 &&
+			   cliente_setApellido(bufferCliente, bufferApellido)==0 &&
+			   cliente_setCuit(bufferCliente, bufferCuit)== 0)
 				{
 					printf("\nEl cliente dado de alta tiene el ID: %d", bufferId);
 					ll_add(this, bufferCliente);
 					retorno = 0;
 				}
-			}
-			else
-			{
-				printf("\nError: Ya existe un cliente con el cuit %s .", bufferCuit);
-			}
 		}
 		else
 		{
-			printf("\nSurgio un error durante la alta\n");
+			cliente_delete(bufferCliente);
+			printf("\nSurgio un error durante el alta\n");
 		}
 	}
     return retorno;
 }
 
+/** \brief Alta de ventas
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int controller_venderAfiches(LinkedList* this, LinkedList* this2 )
 {
 	int retorno = -1;
@@ -275,7 +277,13 @@ int controller_venderAfiches(LinkedList* this, LinkedList* this2 )
 
 	return retorno;
 }
-
+/** \brief Modifica una venta
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
 {
 	int retorno = -1;
@@ -290,66 +298,75 @@ int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
 	if(this1 != NULL && this2 != NULL)
 	{
 		printf("\nID VENTA - ID CLIENTE -    NOMBRE ARCHIVO    - CANTIDAD AFICHES- ZONA - ESTADO\n");
-		listaNoCobrados = ll_filter(this2, venta_listarVentasSinCobrar);
-		if(controller_printVentas(listaNoCobrados) == 0 &&
+		listaNoCobrados = ll_filter(this2, venta_buscarVentasSinCobrar);
+		if(ll_map(listaNoCobrados, venta_imprimirUnaVenta) == 0 &&
 		   utn_getNumero("\n\nIngrese el ID de la venta que quiere modificar: ", "\nEse no es un id valido\n",
 						&auxIdVenta, 2,1,99999) == 0)
 		{
-			if(cliente_imprimirClienteDeUnaVenta(this1, this2, auxIdVenta) == 0)
-			{
 				bufferVenta = venta_buscarVentaPorId(this2,auxIdVenta);
-				venta_getCantidadAfiches(bufferVenta,&auxCantidad);
-				venta_getNombreArchivo(bufferVenta,auxNombreArchivo);
-				venta_getZona(bufferVenta,&auxZona);
-
-				do
+				if(bufferVenta != NULL  &&
+				   cliente_imprimirClienteDeUnaVenta(this1, this2, auxIdVenta) == 0 &&
+				   venta_getCantidadAfiches(bufferVenta,&auxCantidad) == 0 &&
+				   venta_getNombreArchivo(bufferVenta,auxNombreArchivo) == 0 &&
+				   venta_getZona(bufferVenta,&auxZona) == 0)
 				{
-					printf("\n\nCantidad afiches: %d Nombre Archivo:%s   Zona: %d\n",auxCantidad, auxNombreArchivo, auxZona);
-					if(
-						utn_getNumero("\nQue campo desea modificar?:\n1-Cantidad de afiches.\n2-Nombre del archivo.\n"
-									 "3-Zona(1- CABA  2- ZONA SUR 3- ZONA OESTE)\n4-Salir\n\n",
-									 "\nEsa no es una opcion valida\n", &opcion, 2, 1, 4) == 0)
+					do
 					{
-						switch(opcion)
+						printf("\n\nCantidad afiches: %d Nombre Archivo:%s   Zona: %d\n",auxCantidad, auxNombreArchivo, auxZona);
+						if(
+							utn_getNumero("\nQue campo desea modificar?:\n1-Cantidad de afiches.\n2-Nombre del archivo.\n"
+										 "3-Zona(1- CABA  2- ZONA SUR 3- ZONA OESTE)\n4-Salir\n\n",
+										 "\nEsa no es una opcion valida\n", &opcion, 2, 1, 4) == 0)
 						{
-						case 1:
-							if(utn_getNumero("\nIngrese la nueva cantidad de afiches: ",
-							  "\nEsa no es una cantidad valida\n", &auxCantidad, 2, 1,100) == 0  &&
-									venta_setCantidadAfiches(bufferVenta,auxCantidad ) == 0)
+							switch(opcion)
 							{
-								printf("\nCambio logrado exitosamente\n");
-							}
-							break;
-						case 2:
-							if(utn_getString("\nIngrese el nuevo nombre del afiche: ",
-									"\nEse no es un nombre valido\n", auxNombreArchivo, 2,SIZEVENTAS) == 0 &&
-									venta_setNombreArchivo(bufferVenta,auxNombreArchivo) == 0)
-							{
-								printf("\nCambio logrado exitosamente\n");
-							}
-							break;
+							case 1:
+								if(utn_getNumero("\nIngrese la nueva cantidad de afiches: ",
+								  "\nEsa no es una cantidad valida\n", &auxCantidad, 2, 1,100) == 0  &&
+										venta_setCantidadAfiches(bufferVenta,auxCantidad ) == 0)
+								{
+									printf("\nCambio logrado exitosamente\n");
+								}
+								break;
+							case 2:
+								if(utn_getString("\nIngrese el nuevo nombre del afiche: ",
+										"\nEse no es un nombre valido\n", auxNombreArchivo, 2,SIZEVENTAS) == 0 &&
+										venta_setNombreArchivo(bufferVenta,auxNombreArchivo) == 0)
+								{
+									printf("\nCambio logrado exitosamente\n");
+								}
+								break;
 
-						case 3:
-							if(utn_getNumero("\nIngrese la zona donde se pegaran los afiches:\n1-CABA\n2-ZONA SUR\n3-ZONA OESTE\n",
-								      "\nEsa no es una zona valido\n", &auxZona, 2, 1, 3) == 0 &&
-								venta_setZona(bufferVenta,auxZona) == 0 )
-							{
-								printf("\nCambio logrado exitosamente\n");
+							case 3:
+								if(utn_getNumero("\nIngrese la zona donde se pegaran los afiches:\n1-CABA\n2-ZONA SUR\n3-ZONA OESTE\n",
+										  "\nEsa no es una zona valido\n", &auxZona, 2, 1, 3) == 0 &&
+									venta_setZona(bufferVenta,auxZona) == 0 )
+								{
+									printf("\nCambio logrado exitosamente\n");
+								}
+								break;
 							}
-							break;
 						}
-					}
-				}while(opcion != 4);
-				retorno = 0;
+					}while(opcion != 4);
+					retorno = 0;
+				}
 			}
 			else
 			{
 				printf("\nEse ID no es modificable.");
 			}
-		}
+
 	}
 	return retorno;
 }
+
+/** \brief Modifica el estado de la cobranza de una venta
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int controller_cobrarVenta(LinkedList* this1, LinkedList* this2)
 {
 	int retorno = -1;
@@ -361,10 +378,10 @@ int controller_cobrarVenta(LinkedList* this1, LinkedList* this2)
 	if(this1 != NULL && this2 != NULL)
 	{
 		printf("\nID VENTA - ID CLIENTE -    NOMBRE ARCHIVO    - CANTIDAD AFICHES- ZONA - ESTADO\n");
-		listaNoCobrados = ll_filter(this2, venta_listarVentasSinCobrar);
-		if(controller_printVentas(listaNoCobrados) == 0 &&
+		listaNoCobrados = ll_filter(this2, venta_buscarVentasSinCobrar);
+		if(ll_map(listaNoCobrados, venta_imprimirUnaVenta) == 0 &&
 		   utn_getNumero("\n\nIngrese el ID de la venta que quiere modificar: ", "\nEse no es un id valido\n",
-						&auxIdVenta, 2,1,99999) == 0)
+						&auxIdVenta, 2,1,999) == 0)
 		{
 			if(cliente_imprimirClienteDeUnaVenta(this1, this2, auxIdVenta) == 0)
 			{
@@ -390,6 +407,12 @@ int controller_cobrarVenta(LinkedList* this1, LinkedList* this2)
 	}
 	return retorno;
 }
+/** \brief Imprime la lista de clientes
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int controller_printClientes(LinkedList* this)
 {
 	int retorno = -1;
@@ -418,7 +441,12 @@ int controller_printClientes(LinkedList* this)
 
 	return retorno;
 }
-
+/** \brief Imrpime la lista de ventas
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista de los ventas
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int controller_printVentas(LinkedList* this)
 {
 	int retorno = -1;
@@ -454,11 +482,11 @@ int controller_printVentas(LinkedList* this)
 
 	return retorno;
 }
-/** \brief Busca el proximo id en la lista
+/** \brief Busca el id maximo de la lista
  *
  * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
- * \return int  el indice deseado o -1 si hay error
- *
+ * \param id int* el indice maximo encontrado
+ * return int  el indice deseado o -1 si hay error
  */
 int controller_encontrarIdMaximoCliente (LinkedList* this, int* id)
 {
@@ -487,6 +515,12 @@ int controller_encontrarIdMaximoCliente (LinkedList* this, int* id)
 	return retorno;
 }
 
+/** \brief Busca el proximo id en la lista
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param id int* puntero al proximo id
+ * \return -1 si hay error o 0 si sale bien
+ */
 int controller_asignarIdCliente(LinkedList* this, int* id)
 {
 	int retorno = -1;
@@ -502,6 +536,12 @@ int controller_asignarIdCliente(LinkedList* this, int* id)
 	return retorno;
 }
 
+/** \brief Busca el id maximo de la lista
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param id int* el indice maximo encontrado
+ * return int  el indice deseado o -1 si hay error
+ */
 int controller_encontrarIdMaximoVenta (LinkedList* this, int* id)
 {
 	int retorno = -1;
@@ -530,6 +570,12 @@ int controller_encontrarIdMaximoVenta (LinkedList* this, int* id)
 	return retorno;
 }
 
+/** \brief Busca el proximo id en la lista
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista
+ * \param id int* puntero al proximo id
+ * \return -1 si hay error o 0 si sale bien
+ */
 int controller_asignarIdVenta(LinkedList* this, int* id)
 {
 	int retorno = -1;
@@ -545,7 +591,14 @@ int controller_asignarIdVenta(LinkedList* this, int* id)
 	return retorno;
 }
 
-
+/** \brief Imprime el cliente de una venta
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \param id int el id del cliente a encontrar
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int id)
 {
 	int retorno = -1;
@@ -585,30 +638,5 @@ int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int i
 	return retorno;
 }
 
-int cliente_buscarCuitRepetido(LinkedList* this, char* cuit)
-{
-	int retorno = -1;
-	int len;
-	Cliente* bufferCliente;
-	char auxCuit[SIZECUIT];
-
-	if(this != NULL && cuit > 0)
-	{
-		retorno = 0;
-		len = ll_len(this);
-		for(int i = 0; i < len; i++)
-		{
-			bufferCliente = (Cliente*) ll_get(this, i);
-			if(bufferCliente != NULL &&
-			   cliente_getCuit(bufferCliente, auxCuit) == 0 &&
-			   strncmp(cuit, auxCuit,SIZECUIT) == 0)
-			{
-				retorno = 1;
-				break;
-			}
-		}
-	}
-	return retorno;
-}
 
 
