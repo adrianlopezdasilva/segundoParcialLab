@@ -1,5 +1,5 @@
 1,2,Se busca urgente,2,1,1
-2,5,Se necesita empleado,5,3,0
+2,21,Se necesita empleado,5,3,0
 3,1,Se busca cajero,8,1,1
 4,6,Perro perdido,7,1,0
 5,5,Necesitamos,9,3,1

@@ -262,4 +262,89 @@ int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int cr
 	return retorno;
 }
 
+int informe_clinteMayorOMenorAfiches2(LinkedList* this1,LinkedList* this2 )
+{
+	int retorno = -1;
+	Cliente* bufferCliente;
+	LinkedList* auxList = NULL;
+	int auxId;
+	int acumulador = 0;
+	int bufferId;
+	int minimo;
+	int idAMostrar;
+
+
+	if(this1 != NULL && this2 != NULL)
+	{
+		auxList = ll_filter(this2,venta_buscarVentasCobradas);
+		for(int i = 0; i < ll_len(this1); i++)
+
+		{
+			bufferCliente = (Cliente*) ll_get(this1,i);
+			cliente_getId(bufferCliente, &auxId);
+			acumulador = ll_reduceIntArg(auxList, venta_ventasDeUnCliente, &bufferId);
+			{
+				if(i == 0 || acumulador < minimo)
+				{
+					minimo = acumulador;
+					retorno = 0;
+					idAMostrar = auxId;
+				}
+			}
+		}
+		printf("\nEs el ID: %d con %d ventas\n", idAMostrar, minimo);
+	}
+	return retorno;
+
+
+}
+/** \brief Menu de estadisticas
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
+int informe_estadisticas(LinkedList* this1, LinkedList* this2)
+{
+	int opcionEstadisticas;
+	int retorno = -1;
+	if(this1 != NULL && this2 != NULL)
+	{
+		do
+		{
+			if(utn_getNumero("\n\nMenu de estadisticas"
+				 "\n1. Cliente al que se le vendio mas afiches."
+				 "\n2. Cliente al que se le vendio menos afiches."
+				 "\n3. Venta con mas afiches vendidos"
+				 "\n4. Salir\n","Error,opcion invalida\n",&opcionEstadisticas, 5, 1, 4)== 0)
+			{
+				switch(opcionEstadisticas)
+				{
+				case 1:
+						if(informe_clinteMayorOMenorAfiches(this1, this2, opcionEstadisticas) == 0)
+						{
+							printf("\nInforme realizado extiosamente \n");
+						}
+						 break;
+				case 2:
+						if(informe_clinteMayorOMenorAfiches(this1, this2, opcionEstadisticas) == 0)
+						{
+							printf("\nInforme realizado extiosamente \n");
+						}
+						 break;
+				case 3:
+						if(informe_ventaConMayorAfiches(this1, this2) == 0)
+						{
+						  printf("\nInforme realizado extiosamente \n");
+						}
+						 break;
+				}
+			}
+		}while(opcionEstadisticas != 4);
+		retorno = 0;
+	}
+	return retorno;
+}
+
 

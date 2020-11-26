@@ -21,7 +21,6 @@ int main(void)
 {
 	setbuf(stdout, NULL);
 	int opcion;
-	int opcionEstadisticas;
 	int flagCargado = 0;
 
 	LinkedList* listaClientes = ll_newLinkedList();
@@ -93,37 +92,10 @@ int main(void)
 					}
 					break;
 			case 7:
-				do
-				{
-					if(utn_getNumero("\n\nMenu de estadisticas"
-    					 "\n1. Cliente al que se le vendio mas afiches."
-    					 "\n2. Cliente al que se le vendio menos afiches."
-    					 "\n3. Venta con mas afiches vendidos"
-    					 "\n4. Salir\n","Error,opcion invalida\n",&opcionEstadisticas, 5, 1, 4)== 0)
+					if(informe_estadisticas(listaClientes, listaVentas) == 0)
 					{
-						switch(opcionEstadisticas)
-						{
-						case 1:
-								if(informe_clinteMayorOMenorAfiches(listaClientes, listaVentas, opcionEstadisticas) == 0)
-								{
-									printf("\nInforme realizado extiosamente \n");
-								}
-							 	 break;
-						case 2:
-								if(informe_clinteMayorOMenorAfiches(listaClientes, listaVentas, opcionEstadisticas) == 0)
-								{
-									printf("\nInforme realizado extiosamente \n");
-								}
-							 	 break;
-						case 3:
-								if(informe_ventaConMayorAfiches(listaClientes, listaVentas) == 0)
-								{
-								  printf("\nInforme realizado extiosamente \n");
-								}
-							 	 break;
-						}
+						printf("\nVolviendo al menu principal...\n");
 					}
-				}while(opcionEstadisticas != 4);
 					break;
 			}
 			flagCargado = 1;

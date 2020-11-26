@@ -388,11 +388,12 @@ int venta_buscarVentasCobradas(void* this)
 	return retorno;
 }
 
+
 /** \brief Busca una coincidencia de un id pasado por parametro con un id existente en la lista
  *
  * \param this Linkedlist* la lista a utilizar
  * \param id int el id a comparar
- *
+ *\param id estado el estado de la venta que se desea
  * \return Venta* en caso de que salga bien, NULL de lo contrario
  */
 Venta* venta_buscarVentaPorId(LinkedList* this, int id)
@@ -400,15 +401,16 @@ Venta* venta_buscarVentaPorId(LinkedList* this, int id)
 	int len;
 	Venta* bufferVenta = NULL;
 	int auxId;
+	int auxEstado;
 
-	if(this != NULL)
+	if(this != NULL )
 	{
 		len = ll_len(this);
 		for(int i = 0; i < len; i++)
 		{
 			bufferVenta = (Venta*) ll_get (this, i);
 			if(venta_getIdVenta(bufferVenta, &auxId) == 0 &&
-			   id == auxId)
+			   id == auxId )
 			{
 				break;
 			}
@@ -432,8 +434,7 @@ int venta_ventasDeUnCliente(void* pElement, void* arg)
 
 	if(venta_getIdCliente(bufferVenta, &bufferId) == 0 &&
 	   bufferId == *auxIdCliente &&
-	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0
-	   && auxCantidad >= 0)
+	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0)
 	{
 		retorno = auxCantidad;
 	}
@@ -463,7 +464,8 @@ int venta_imprimirUnaVenta(void* this)
 		   venta_getNombreArchivo(bufferVenta, auxNombreArchivo)==0 &&
 		   venta_getZona(bufferVenta, &auxZona)==0 )
 		{
-			printf("\n%d -  %d -%s -  %d - %d - %d",auxIdVenta, auxIdCliente, auxNombreArchivo, auxCantidad, auxZona, auxEstado);
+			printf("\n%d -      %d -    %20s - %5d  \t%10d -\t %5d",
+			auxIdVenta, auxIdCliente, auxNombreArchivo, auxCantidad, auxZona, auxEstado);
 			retorno = 0;
 		}
 

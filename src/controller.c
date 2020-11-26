@@ -295,18 +295,18 @@ int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
 	int retorno = -1;
 	int auxIdVenta;
 	int auxIdCliente;
-	int clienteAMostrar;
 	int opcion;
 	int auxCantidad;
 	char auxNombreArchivo[SIZEVENTAS];
 	int auxZona;
+	int auxEstado;
 	LinkedList* listaNoCobrados = NULL;
 	Venta* bufferVenta;
 	Cliente* bufferCliente;
 
 	if(this1 != NULL && this2 != NULL)
 	{
-		printf("\nID VENTA - ID CLIENTE -    NOMBRE ARCHIVO    - CANTIDAD AFICHES- ZONA - ESTADO\n");
+		printf("\nID VENTA - ID CLIENTE -  NOMBRE ARCHIVO - CANTIDAD AFICHES- ZONA - ESTADO\n");
 		listaNoCobrados = ll_filter(this2, venta_buscarVentasSinCobrar);
 		if(ll_map(listaNoCobrados, venta_imprimirUnaVenta) == 0 &&
 		   utn_getNumero("\n\nIngrese el ID de la venta que quiere modificar: ", "\nEse no es un id valido\n",
@@ -314,11 +314,14 @@ int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
 		{
 				bufferVenta = venta_buscarVentaPorId(this2,auxIdVenta);
 				if(bufferVenta != NULL &&
+				   venta_getEstadoCobranza(bufferVenta,&auxEstado ) == 0 &&
+				   auxEstado == SINCOBRAR &&
 				   venta_getIdCliente(bufferVenta,&auxIdCliente ) == 0)
+
 				{
 					bufferCliente = cliente_devolverClientePorId(this1, auxIdCliente);
-					if(cliente_getId(bufferCliente,&clienteAMostrar)== 0 &&
-					   cliente_imprimirClienteDeUnaVenta(this1, this2, clienteAMostrar) == 0 &&
+					if(bufferCliente != NULL &&
+					   cliente_printCliente(bufferCliente) == 0 &&
 					   venta_getCantidadAfiches(bufferVenta,&auxCantidad) == 0 &&
 					   venta_getNombreArchivo(bufferVenta,auxNombreArchivo) == 0 &&
 					   venta_getZona(bufferVenta,&auxZona) == 0)
@@ -364,10 +367,10 @@ int controller_modificarVenta(LinkedList* this1, LinkedList* this2)
 						retorno = 0;
 					}
 				}
-			}
-			else
-			{
-				printf("\nEse ID no es modificable.");
+				else
+				{
+					printf("\nEse ID no es modificable.");
+				}
 			}
 
 	}
@@ -386,6 +389,7 @@ int controller_cobrarVenta(LinkedList* this1, LinkedList* this2)
 	int retorno = -1;
 	int auxIdVenta;
 	int flagCobranza = 2;
+	int auxEstado;
 	LinkedList* listaNoCobrados = NULL;
 	Venta* bufferVenta;
 
@@ -397,9 +401,11 @@ int controller_cobrarVenta(LinkedList* this1, LinkedList* this2)
 		   utn_getNumero("\n\nIngrese el ID de la venta que quiere modificar: ", "\nEse no es un id valido\n",
 						&auxIdVenta, 2,1,999) == 0)
 		{
-			if(cliente_imprimirClienteDeUnaVenta(this1, this2, auxIdVenta) == 0)
+			bufferVenta = venta_buscarVentaPorId(this2,auxIdVenta);
+			if(venta_getEstadoCobranza(bufferVenta,&auxEstado ) == 0 &&
+				auxEstado == SINCOBRAR &&
+				cliente_imprimirClienteDeUnaVenta(this1, this2, auxIdVenta) == 0)
 			{
-				bufferVenta = venta_buscarVentaPorId(this2,auxIdVenta);
 					if(utn_getNumero("\n\nEsta realmente seguro que quiere marcar esta venta como cobrada?\n"
 									 "\n1-Marcar venta como cobranda\n2-Abortar operacion\n\n",
 									 "\nEsa no es una opcion valida\n", &flagCobranza, 2, 1, 2) == 0 &&
@@ -551,7 +557,6 @@ int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int i
 	char auxNombre[SIZECLIENTE];
 	char auxApellido[SIZECLIENTE];
 	char auxCuit[SIZECUIT];
-	int auxEstado;
 
 	if(this1 != NULL && this2 != NULL)
 	{
@@ -564,8 +569,6 @@ int cliente_imprimirClienteDeUnaVenta(LinkedList* this1,LinkedList* this2, int i
 			if(cliente_getId(bufferCliente, &auxIdCliente) == 0 &&
 			   venta_getIdCliente(bufferVenta,&idABuscar ) == 0 &&
 			   auxIdCliente == idABuscar &&
-			   venta_getEstadoCobranza(bufferVenta,&auxEstado ) == 0&&
-			   auxEstado == SINCOBRAR &&
 			   cliente_getNombre(bufferCliente, auxNombre) == 0 &&
 		       cliente_getApellido(bufferCliente, auxApellido) == 0 &&
 			   cliente_getCuit(bufferCliente, auxCuit) == 0)

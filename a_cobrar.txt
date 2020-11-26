@@ -9,7 +9,7 @@
 10, Roberto, Sanchez,20353535351,0
 11, Mariana, Leuda,20353535352,0
 12, Natalia, Lopez,20353535353,0
-13, Guadalupe, Martinez,20353535354,1
+13, Guadalupe, Martinez,20353535354,0
 14, Cristiano, Ronaldo,20353535355,0
 15, Juan, Bautista,20353535356,0
 16, Marta, Gomez,20353535357,0
@@ -17,3 +17,4 @@
 18, Guadalupe, Montana,20353535359,0
 19, Miriam, Celestino,20393232328,0
 20,Tamara,Cantaros,27353535358,0
+21,Carla,Nuria,27353535353,0

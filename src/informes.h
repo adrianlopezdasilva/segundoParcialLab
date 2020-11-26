@@ -14,4 +14,5 @@ int informe_informeDeudas(char* path,LinkedList* this1, LinkedList* this2);
 int informe_contadorVentasAdeudadas(LinkedList* this,int idCliente);
 int informe_ventaConMayorAfiches(LinkedList* this1, LinkedList* this2);
 int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int criterio);
+int informe_estadisticas(LinkedList* this1, LinkedList* this2);
 #endif /* INFORMES_H_ */
