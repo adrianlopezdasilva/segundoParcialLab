@@ -1,10 +1,13 @@
-1, 2, Se busca urgente, 2, 1, 1
-2, 5, Se necesita empleado, 5, 3, 0
-3, 1, Se busca cajero, 8, 1, 1
-4, 6, Perro perdido, 7, 1, 0
-5, 5, Necesitamos, 9, 3, 1
-6, 5, En busqueda, 1, 2, 1
-7, 7, En camino, 1, 2, 0
-8, 3, Solo estudiantes, 10, 2, 0
-9, 4, Solo profesionales, 10, 2, 0
-10, 8, Solo principiantes, 10, 2, 0
+1,2,Se busca urgente,2,1,1
+2,5,Se necesita empleado,5,3,0
+3,1,Se busca cajero,8,1,1
+4,6,Perro perdido,7,1,0
+5,5,Necesitamos,9,3,1
+6,5,En busqueda,1,2,1
+7,7,En camino,1,2,0
+8,3,Solo estudiantes,10,2,1
+9,4,Solo profesionales,10,2,0
+10,15,En busqueda,20,1,1
+11,13,Para mascotas,3,3,1
+12,8,Urgente,6,2,0
+13,13,De urgencia,5,3,1

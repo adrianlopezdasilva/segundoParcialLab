@@ -416,7 +416,12 @@ Venta* venta_buscarVentaPorId(LinkedList* this, int id)
 	}
 	return bufferVenta;
 }
-
+/** \brief Funcion critero que acumula las ventas que tengan el mismo id cliente
+ * \param this Linkedlist* la lista a utilizar
+ * \param id int el id a comparar
+ *
+ * \return -1 si hay error, lo acumulado si ok
+ */
 int venta_ventasDeUnCliente(void* pElement, void* arg)
 {
 	int retorno = -1;
@@ -427,13 +432,17 @@ int venta_ventasDeUnCliente(void* pElement, void* arg)
 
 	if(venta_getIdCliente(bufferVenta, &bufferId) == 0 &&
 	   bufferId == *auxIdCliente &&
-	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0)
+	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0
+	   && auxCantidad >= 0)
 	{
 		retorno = auxCantidad;
 	}
 	return retorno;
 }
-
+/** \brief Funcion critero que imprime una venta
+ * \param this void* la lista a utilizar
+ * \return -1 si hay error, lo acumulado si ok
+ */
 int venta_imprimirUnaVenta(void* this)
 {
 	int retorno = -1;
@@ -454,7 +463,7 @@ int venta_imprimirUnaVenta(void* this)
 		   venta_getNombreArchivo(bufferVenta, auxNombreArchivo)==0 &&
 		   venta_getZona(bufferVenta, &auxZona)==0 )
 		{
-			printf("\n%d - %d - %s -  %d - %d - %d",auxIdVenta, auxIdCliente, auxNombreArchivo, auxCantidad, auxZona, auxEstado);
+			printf("\n%d -  %d -%s -  %d - %d - %d",auxIdVenta, auxIdCliente, auxNombreArchivo, auxCantidad, auxZona, auxEstado);
 			retorno = 0;
 		}
 

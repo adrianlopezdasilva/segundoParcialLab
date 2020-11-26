@@ -1,17 +1,19 @@
-1,       Mariano,       Rojas, 20393284921, 0
-2,       Joana,       Gutierrez, 20393284922, 0
-3,       carlos,       gonzalez, 20393284923, 1
-4,       juan,        escarlata, 20393284924, 1
-6,       natalia,       perez, 20393284927, 1
-7,       Mariana,       Gomez, 203932849238, 1
-8,       Walter,       Rodriguez, 20393284923, 1
-9,       carlos,       gomez, 20353535350, 0
-10,       Roberto,       sanchez, 20353535351, 0
-11,       mariana,       leuda, 20353535352, 0
-12,       natalia,       lopez, 20353535353, 0
-13,       aa,         aa, 20353535354, 0
-14,        bbb,        bbb, 20353535355, 0
-15,       ccc,       ccc, 20353535356, 0
-16,      Marta,      Gomez, 20353535357, 0
-17,     Carla,     Gomez, 20353535358, 0
-18,    Guadalupe,    Montana, 20353535359, 0
+1, Mariano, Rojas,20393284921,0
+2, Joana, Gutierrez,20393284922,0
+3, Carlos, Gonzalez,20393284923,0
+4, Juan, Escarlata,20393284924,1
+6, Natalia, Perez,20393284927,1
+7, Mariana, Gomez,203932849238,1
+8, Walter, Rodriguez,20393284923,1
+9, Carlos, Gomez,20353535350,0
+10, Roberto, Sanchez,20353535351,0
+11, Mariana, Leuda,20353535352,0
+12, Natalia, Lopez,20353535353,0
+13, Guadalupe, Martinez,20353535354,1
+14, Cristiano, Ronaldo,20353535355,0
+15, Juan, Bautista,20353535356,0
+16, Marta, Gomez,20353535357,0
+17, Carla, Gomez,20353535358,0
+18, Guadalupe, Montana,20353535359,0
+19, Miriam, Celestino,20393232328,0
+20,Tamara,Cantaros,27353535358,0

@@ -41,7 +41,7 @@ int informe_informeCobros(char* path,LinkedList* this1, LinkedList* this2)
 		if(pFile != NULL)
 		{
 			len = ll_len(this1);
-			printf("\n\n ID   NOMBRE  \t   APELLIDO \t       CUIT   TOTAL COBRADO");
+			printf("\n\n ID   NOMBRE  \t  APELLIDO       CUIT   TOTAL COBRADO");
 			for(int i = 0; i < len; i++)
 			{
 				bufferCliente = (Cliente*) ll_get(this1, i);
@@ -53,7 +53,7 @@ int informe_informeCobros(char* path,LinkedList* this1, LinkedList* this2)
 				{
 					cantidadCobrados = informe_contadorVentasCobradas(this2, auxId);
 					printf("\n%d- %s  - %s  -    %s  - %d ", auxId, auxNombre, auxApellido, auxCuit, cantidadCobrados);
-					fprintf(pFile,"%d, %s, %s, %s, %d\n",auxId, auxNombre, auxApellido,auxCuit, cantidadCobrados);
+					fprintf(pFile,"%d,%s,%s,%s,%d\n",auxId, auxNombre, auxApellido,auxCuit, cantidadCobrados);
 				}
 			}
 		retorno = 0;
@@ -84,7 +84,8 @@ int informe_contadorVentasCobradas(LinkedList* this,int idCliente)
 		for(int i = 0; i < len; i++)
 		{
 			bufferVenta = (Venta*) ll_get(this, i);
-			if(venta_getIdCliente(bufferVenta, &auxIdCliente)== 0 &&
+			if(bufferVenta != NULL &&
+			   venta_getIdCliente(bufferVenta, &auxIdCliente)== 0 &&
 			   auxIdCliente == idCliente &&
 			   venta_getEstadoCobranza(bufferVenta, &auxEstado) == 0 &&
 			   auxEstado == COBRADA)
@@ -134,7 +135,7 @@ int informe_informeDeudas(char* path,LinkedList* this1, LinkedList* this2)
 			{
 				cantidadDeudas = informe_contadorVentasAdeudadas(this2, auxId);
 				printf("\n%d- %s  -   %s  -    %s  - %d ", auxId, auxNombre, auxApellido, auxCuit, cantidadDeudas);
-				fprintf(pFile,"%d, %s, %s, %s, %d\n",auxId, auxNombre, auxApellido,auxCuit, cantidadDeudas);
+				fprintf(pFile,"%d,%s,%s,%s,%d\n",auxId, auxNombre, auxApellido,auxCuit, cantidadDeudas);
 			}
 		}
 		retorno = 0;
@@ -206,7 +207,7 @@ int informe_ventaConMayorAfiches(LinkedList* this1, LinkedList* this2)
 			if(venta_getEstadoCobranza(bufferVenta, &auxEstado) == 0 &&
 			   auxEstado == COBRADA  &&
 			   venta_getCantidadAfiches(bufferVenta, &auxCantidadVendidos) == 0 &&
-			   ( i == 0 || auxCantidadVendidos >  maximoVentas ))
+			   (auxCantidadVendidos >  maximoVentas || i == 0 ))
 			{
 				maximoVentas = auxCantidadVendidos;
 				if(venta_getIdVenta(bufferVenta, &auxIdVenta) == 0 &&
@@ -228,7 +229,7 @@ int informe_ventaConMayorAfiches(LinkedList* this1, LinkedList* this2)
 	return retorno;
 }
 
-int informe_clienteMayorAfichesVendidos(LinkedList* this1, LinkedList* this2)
+int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int criterio)
 {
 	int retorno = -1;
 	LinkedList* auxList = NULL;
@@ -236,33 +237,29 @@ int informe_clienteMayorAfichesVendidos(LinkedList* this1, LinkedList* this2)
 	int len;
 	int acumulador = 0;
 	int bufferId;
-	int auxMaximo;
-	int auxId;
+	int auxCantidad = 0;
+	int idAMostrar;
 
-	if(this1 != NULL && this2 != NULL)
+	if(this1 != NULL && this2 != NULL && (criterio == 1 || criterio == 2))
 	{
 		len = ll_len(this1);
 		auxList = ll_filter(this2,venta_buscarVentasCobradas);
 		for(int i = 0; i < len; i++)
 		{
-			bufferCliente = (Cliente*) ll_get(auxList,i);
+			bufferCliente = (Cliente*) ll_get(this1,i);
 			cliente_getId(bufferCliente, &bufferId);
-
 			acumulador = ll_reduceIntArg(auxList, venta_ventasDeUnCliente, &bufferId);
-			if(i == 0 || acumulador > auxMaximo)
+			if( (acumulador > auxCantidad && criterio == 1) || (acumulador < auxCantidad && criterio == 2) || i == 0 )
 			{
-				auxMaximo = acumulador;
-				cliente_getId(bufferCliente, &auxId);
-				printf("\nEl cliente con mas ventas es: %d con %d ventas ", auxId, auxMaximo);
-
+				auxCantidad = acumulador;
+				idAMostrar = bufferId;
 			}
 		}
 		retorno = 0;
-		printf("\nEl cliente con mayor ventas es: %d con %d ventas ", auxId, auxMaximo);
+		printf("\nEs el ID: %d con %d ventas\n", idAMostrar, auxCantidad);
 	}
 
 	return retorno;
 }
-
 
 

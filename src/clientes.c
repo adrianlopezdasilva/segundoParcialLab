@@ -318,6 +318,36 @@ int cliente_buscarCuitRepetido(LinkedList* this, char* cuit)
 	}
 	return retorno;
 }
+
+/** \brief Imprime la lista de clientes
+ *
+ * \param this LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
+int cliente_printCliente(void* this)
+{
+	int retorno = -1;
+	Cliente* bufferCliente = (Cliente*) this;
+	int auxId;
+	char auxNombre[SIZECLIENTE];
+	char auxApellido[SIZECLIENTE];
+	char auxCuit[SIZECUIT];
+
+	if(this != NULL)
+	{
+		if(cliente_getId(bufferCliente, &auxId) == 0 &&
+		   cliente_getNombre(bufferCliente, auxNombre)== 0 &&
+		   cliente_getApellido(bufferCliente, auxApellido)== 0 &&
+		   cliente_getCuit(bufferCliente, auxCuit)== 0)
+		{
+			printf("\n%d- %s  -   %s  -    %s  ", auxId, auxNombre, auxApellido, auxCuit);
+			retorno = 0;
+		}
+	}
+
+	return retorno;
+}
 /** \brief Compara la lista de clientes segun su nombre
  *
  * \param thisOne void* El primer campo a comprar

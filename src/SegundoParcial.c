@@ -21,6 +21,7 @@ int main(void)
 {
 	setbuf(stdout, NULL);
 	int opcion;
+	int opcionEstadisticas;
 	int flagCargado = 0;
 
 	LinkedList* listaClientes = ll_newLinkedList();
@@ -41,7 +42,7 @@ int main(void)
     					 "\n5. Generar informe de cobros."
     					 "\n6. Generar informe de deudas."
     					 "\n7. Generar estadisticas."
-    					 "\n8. Salir\n","Error,opcion invalida\n",&opcion, 20, 1, 8)== 0)
+    					 "\n8. Salir\n","Error,opcion invalida\n",&opcion, 5, 1, 8)== 0)
 		{
 			switch(opcion)
 			{
@@ -51,10 +52,7 @@ int main(void)
 					{
 						printf("\nCliente agregado con exito\n");
 					}
-					else
-					{
-						printf("\nSurgio un error");
-					}
+
 					break;
 			case 2:
 					if( controller_venderAfiches(listaClientes,listaVentas) == 0 &&
@@ -95,8 +93,37 @@ int main(void)
 					}
 					break;
 			case 7:
-					informe_ventaConMayorAfiches(listaClientes, listaVentas);
-					informe_clienteMayorAfichesVendidos(listaClientes, listaVentas);
+				do
+				{
+					if(utn_getNumero("\n\nMenu de estadisticas"
+    					 "\n1. Cliente al que se le vendio mas afiches."
+    					 "\n2. Cliente al que se le vendio menos afiches."
+    					 "\n3. Venta con mas afiches vendidos"
+    					 "\n4. Salir\n","Error,opcion invalida\n",&opcionEstadisticas, 5, 1, 4)== 0)
+					{
+						switch(opcionEstadisticas)
+						{
+						case 1:
+								if(informe_clinteMayorOMenorAfiches(listaClientes, listaVentas, opcionEstadisticas) == 0)
+								{
+									printf("\nInforme realizado extiosamente \n");
+								}
+							 	 break;
+						case 2:
+								if(informe_clinteMayorOMenorAfiches(listaClientes, listaVentas, opcionEstadisticas) == 0)
+								{
+									printf("\nInforme realizado extiosamente \n");
+								}
+							 	 break;
+						case 3:
+								if(informe_ventaConMayorAfiches(listaClientes, listaVentas) == 0)
+								{
+								  printf("\nInforme realizado extiosamente \n");
+								}
+							 	 break;
+						}
+					}
+				}while(opcionEstadisticas != 4);
 					break;
 			}
 			flagCargado = 1;
