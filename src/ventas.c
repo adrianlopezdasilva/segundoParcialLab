@@ -426,16 +426,16 @@ Venta* venta_buscarVentaPorId(LinkedList* this, int id)
  */
 int venta_ventasDeUnCliente(void* pElement, void* arg)
 {
-	int retorno = -1;
+	int retorno = 0;
 	int auxCantidad = 0;
 	int* auxIdCliente = (int*) arg;
 	Venta* bufferVenta = (Venta*) pElement;
 	int bufferId;
 
 	if(venta_getIdCliente(bufferVenta, &bufferId) == 0 &&
-	   bufferId == *auxIdCliente &&
-	   venta_getCantidadAfiches(bufferVenta, &auxCantidad) == 0)
+	   bufferId == (*auxIdCliente))
 	{
+		venta_getCantidadAfiches(bufferVenta, &auxCantidad);
 		retorno = auxCantidad;
 	}
 	return retorno;

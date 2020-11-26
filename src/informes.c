@@ -228,16 +228,23 @@ int informe_ventaConMayorAfiches(LinkedList* this1, LinkedList* this2)
 	}
 	return retorno;
 }
-
+/** \brief Informa cual es el cliente con la mayor cantidad de afiches vendidos o el de menor cantidad, segun se elija
+ *
+ * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
+ * \param this2 LinkedList* es donde esta contenida la direccion de memoria de la lista de las ventas
+ * \param criterio int Para saber si se busca analizar el mayor o el menor
+ * \return int -1 si hay error o 0 si anduvo bien
+ *
+ */
 int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int criterio)
 {
 	int retorno = -1;
 	LinkedList* auxList = NULL;
 	Cliente* bufferCliente;
 	int len;
-	int acumulador = 0;
+	int acumulador;
 	int bufferId;
-	int auxCantidad = 0;
+	int auxCantidad;
 	int idAMostrar;
 
 	if(this1 != NULL && this2 != NULL && (criterio == 1 || criterio == 2))
@@ -246,10 +253,12 @@ int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int cr
 		auxList = ll_filter(this2,venta_buscarVentasCobradas);
 		for(int i = 0; i < len; i++)
 		{
+			acumulador = 0;
 			bufferCliente = (Cliente*) ll_get(this1,i);
 			cliente_getId(bufferCliente, &bufferId);
 			acumulador = ll_reduceIntArg(auxList, venta_ventasDeUnCliente, &bufferId);
-			if( (acumulador > auxCantidad && criterio == 1) || (acumulador < auxCantidad && criterio == 2) || i == 0 )
+			if(((acumulador > auxCantidad || i == 0)   &&  criterio == 1 ) ||
+				((acumulador < auxCantidad || i == 0)  && criterio == 2))
 			{
 				auxCantidad = acumulador;
 				idAMostrar = bufferId;
@@ -262,42 +271,6 @@ int informe_clinteMayorOMenorAfiches(LinkedList* this1, LinkedList* this2,int cr
 	return retorno;
 }
 
-int informe_clinteMayorOMenorAfiches2(LinkedList* this1,LinkedList* this2 )
-{
-	int retorno = -1;
-	Cliente* bufferCliente;
-	LinkedList* auxList = NULL;
-	int auxId;
-	int acumulador = 0;
-	int bufferId;
-	int minimo;
-	int idAMostrar;
-
-
-	if(this1 != NULL && this2 != NULL)
-	{
-		auxList = ll_filter(this2,venta_buscarVentasCobradas);
-		for(int i = 0; i < ll_len(this1); i++)
-
-		{
-			bufferCliente = (Cliente*) ll_get(this1,i);
-			cliente_getId(bufferCliente, &auxId);
-			acumulador = ll_reduceIntArg(auxList, venta_ventasDeUnCliente, &bufferId);
-			{
-				if(i == 0 || acumulador < minimo)
-				{
-					minimo = acumulador;
-					retorno = 0;
-					idAMostrar = auxId;
-				}
-			}
-		}
-		printf("\nEs el ID: %d con %d ventas\n", idAMostrar, minimo);
-	}
-	return retorno;
-
-
-}
 /** \brief Menu de estadisticas
  *
  * \param this1 LinkedList* es donde esta contenida la direccion de memoria de la lista de los clientes
